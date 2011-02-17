@@ -1,0 +1,35 @@
+{
+   "abstract" : "serve pre-gzipped content to compression-enabled clients",
+   "author" : [
+      "Aristotle Pagaltzis <pagaltzis@gmx.de>"
+   ],
+   "dynamic_config" : 0,
+   "generated_by" : "Dist::Zilla version 4.200004, CPAN::Meta::Converter version 2.101670",
+   "license" : [
+      "perl_5"
+   ],
+   "meta-spec" : {
+      "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+      "version" : "2"
+   },
+   "name" : "Plack-Middleware-Precompressed",
+   "prereqs" : {
+      "configure" : {
+         "requires" : {
+            "ExtUtils::MakeMaker" : "6.31"
+         }
+      }
+   },
+   "release_status" : "stable",
+   "resources" : {
+      "bugtracker" : {
+         "web" : "http://github.com/ap/Plack-Middleware-Precompressed/issues"
+      },
+      "homepage" : "http://github.com/ap/Plack-Middleware-Precompressed",
+      "repository" : {
+         "type" : "git",
+         "url" : "git://github.com/ap/Plack-Middleware-Precompressed"
+      }
+   },
+   "version" : "1.0"
+}

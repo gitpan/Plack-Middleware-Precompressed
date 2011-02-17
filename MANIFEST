@@ -1,0 +1,12 @@
+Changes
+LICENSE
+MANIFEST
+META.json
+META.yml
+Makefile.PL
+README
+dist.ini
+lib/Plack/Middleware/Precompressed.pm
+t/00.load.t
+t/cpants.t
+t/precompressed.t
