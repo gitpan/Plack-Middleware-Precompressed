@@ -1,7 +1,7 @@
 
 
 This archive contains the distribution Plack-Middleware-Precompressed,
-version 1.002:
+version 1.003:
 
   serve pre-gzipped content to compression-enabled clients
 

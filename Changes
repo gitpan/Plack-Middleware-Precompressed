@@ -1,5 +1,8 @@
 Revision history for Plack-Middleware-Precompressed
 
+1.003 Wed 23 Feb 2011
+	- Fall back to uncompressed file if serving precompressed file fails
+
 1.002 Fri 18 Feb 2011
 	- Switched to using `response_cb`.
 

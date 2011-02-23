@@ -6,7 +6,7 @@ use Test::More;
 use HTTP::Request::Common;
 
 my $status;
-my $app = sub { return [ $status, [ 'Content-Type' => 'text/plain' ], [ $_[0]{'PATH_INFO'} ] ] };
+my $app = sub { return [ $status->($_[0]), [ 'Content-Type' => 'text/plain' ], [ $_[0]{'PATH_INFO'} ] ] };
 
 $app = builder {
 	enable 'Precompressed', match => qr/\.js\z/;
@@ -18,7 +18,7 @@ test_psgi app => $app, client => sub {
 
 	my ( $req, $res );
 
-	$status = 200;
+	$status = sub { 200 };
 
 	$res = $cb->( GET 'http://localhost/foo' );
 	is $res->content(), '/foo', 'Unmatched requests are unmolested';
@@ -38,7 +38,7 @@ test_psgi app => $app, client => sub {
 	is $res->header( 'Content-Encoding' ), 'gzip', '... and have the right encoding declared';
 	is $res->header( 'Vary' ), 'Accept-Encoding', '... along with Accept-Encoding a Vary criterion';
 
-	$status = 404;
+	$status = sub { 404 };
 
 	$res = $cb->( GET 'http://localhost/foo' );
 	ok !$res->header( 'Vary' ), 'Failed and non-content requests are unmolested';
@@ -51,6 +51,13 @@ test_psgi app => $app, client => sub {
 
 	$res = $cb->( GET 'http://localhost/foo.js', 'Accept-Encoding' => 'gzip' );
 	ok !$res->header( 'Vary' ), '... with or without compression headers';
+
+	$status = sub { $_[0]{'PATH_INFO'} =~ /\.gz\z/ ? 404 : 200 };
+
+	$res = $cb->( GET 'http://localhost/foo.js', 'Accept-Encoding' => 'gzip' );
+	is $res->content(), '/foo.js', 'Matched requests with compression headers but no precompressed file still get served';
+	ok !$res->header( 'Content-Encoding' ), '... with no encoding header';
+	ok !$res->header( 'Vary' ), '... and no Vary header';
 };
 
 done_testing;
