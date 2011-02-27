@@ -26,4 +26,4 @@ resources:
   bugtracker: http://github.com/ap/Plack-Middleware-Precompressed/issues
   homepage: http://github.com/ap/Plack-Middleware-Precompressed
   repository: git://github.com/ap/Plack-Middleware-Precompressed
-version: 1.003
+version: 1.004
