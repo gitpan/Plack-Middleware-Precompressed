@@ -1,6 +1,6 @@
 package Plack::Middleware::Precompressed;
 BEGIN {
-  $Plack::Middleware::Precompressed::VERSION = '1.004';
+  $Plack::Middleware::Precompressed::VERSION = '1.005';
 }
 use strict;
 use parent 'Plack::Middleware';
@@ -63,7 +63,7 @@ Plack::Middleware::Precompressed - serve pre-gzipped content to compression-enab
 
 =head1 VERSION
 
-version 1.004
+version 1.005
 
 =head1 SYNOPSIS
 

@@ -25,13 +25,14 @@ my %WriteMakefileArgs = (
   'LICENSE' => 'perl',
   'NAME' => 'Plack::Middleware::Precompressed',
   'PREREQ_PM' => {
+    'Plack' => '0.9942',
     'Plack::MIME' => '0',
     'Plack::Middleware' => '0',
     'Plack::Util' => '0',
     'Plack::Util::Accessor' => '0',
     'parent' => '0'
   },
-  'VERSION' => '1.004',
+  'VERSION' => '1.005',
   'test' => {
     'TESTS' => 't/*.t'
   }
