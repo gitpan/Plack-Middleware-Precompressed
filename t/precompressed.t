@@ -16,8 +16,7 @@ $app = builder {
 test_psgi app => $app, client => sub {
 	my $cb = shift;
 
-	my ( $req, $res );
-
+	my $res;
 	$status = sub { 200 };
 
 	$res = $cb->( GET 'http://localhost/foo' );

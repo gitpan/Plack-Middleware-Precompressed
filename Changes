@@ -1,5 +1,9 @@
 Revision history for Plack-Middleware-Precompressed
 
+1.100 Sat 15 Dec 2012
+	- Added support for `rules` and `env_keys` options as well as for
+	  subclassing.
+
 1.005 Tue 01 Mar 2011
 	- Declare dependecy on Plack 0.9942. No functional changes.
 

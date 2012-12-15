@@ -10,3 +10,5 @@ lib/Plack/Middleware/Precompressed.pm
 t/00.load.t
 t/cpants.t
 t/precompressed.t
+t/rules.t
+t/subclassing.t

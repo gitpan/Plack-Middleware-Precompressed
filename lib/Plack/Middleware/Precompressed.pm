@@ -1,15 +1,23 @@
 package Plack::Middleware::Precompressed;
-BEGIN {
-  $Plack::Middleware::Precompressed::VERSION = '1.005';
+{
+  $Plack::Middleware::Precompressed::VERSION = '1.100';
 }
 use strict;
 use parent 'Plack::Middleware';
 
 # ABSTRACT: serve pre-gzipped content to compression-enabled clients
 
-use Plack::Util::Accessor qw( match );
+use Plack::Util::Accessor qw( match rules env_keys );
 use Plack::MIME ();
 use Plack::Util ();
+use Array::RefElem ();
+
+sub rewrite {
+	my $self = shift;
+	my ( $env ) = @_;
+	my $rules = $self->rules;
+	$rules ? $rules->( defined $env ? $env : () ) : ( $_ .= '.gz' );
+}
 
 sub call {
 	my $self = shift;
@@ -28,7 +36,13 @@ sub call {
 	}
 
 	my $res = do {
-		local $env->{'PATH_INFO'} = "$path.gz" if $encoding;
+		my $keys = $self->env_keys || [];
+		local @$env{ 'PATH_INFO', @$keys } = ( $path, @$env{ @$keys } ) if $encoding;
+		if ( $encoding ) {
+			my %pass_env;
+			Array::RefElem::hv_store %pass_env, $_, $env->{ $_ } for @$keys;
+			$self->rewrite( \%pass_env ) for $env->{'PATH_INFO'};
+		}
 		$self->app->( $env );
 	};
 
@@ -53,7 +67,7 @@ sub call {
 
 1;
 
-
+__END__
 
 =pod
 
@@ -63,16 +77,16 @@ Plack::Middleware::Precompressed - serve pre-gzipped content to compression-enab
 
 =head1 VERSION
 
-version 1.005
+version 1.100
 
 =head1 SYNOPSIS
 
-  use Plack::Builder;
+ use Plack::Builder;
 
-  builder {
-      enable 'Plack::Middleware::Precompressed', match => qr!\.js\z!;
-      $handler;
-  };
+ builder {
+     enable 'Precompressed', match => qr!\.js\z!;
+     $handler;
+ };
 
 =head1 DESCRIPTION
 
@@ -85,8 +99,8 @@ resources once, e.g. as part of your build process, and then serve the
 compressed resource in place of the uncompressed one for compression-enabled
 clients.
 
-To do so, it appends a C<.gz> suffix to the request URI and tries to serve
-that. If that fails, it will try again with the unmodified URI.
+To do so, by default it appends a C<.gz> suffix to the C<PATH_INFO> and tries
+to serve that. If that fails, it will then try again with the unmodified URI.
 
 B<Note>: this means requests for resources that are not pre-compressed will
 always be dispatched I<twice>. You are are advised to use either the C<match>
@@ -98,11 +112,49 @@ unnecessarily.
 
 =over 4
 
-=item match
+=item C<match>
 
-Specifies a regex that must match the request URI to trigger the middleware.
+Specifies a regex that must match the C<PATH_INFO> to trigger the middleware.
+
+=item C<rules>
+
+A callback that is expected to transform the path instead of using the default
+behaviour of appending C<.gz> to the file path. C<PATH_INFO> will be aliased to
+the C<$_> variable, so you can do something like this:
+
+ enable 'Precompressed', match => qr!\.js\z!, rules => sub { s!^/?!/z/! };
+
+This example will prepend C</z/> to file paths instead of appending C<.gz> to
+them.
+
+=item C<env_keys>
+
+An array of PSGI environment key names. If you specify any, then the C<rules>
+callback will receive a reference to a hash with just these keys, aliased to
+the values in the PSGI environment that will be passed to the wrapped app. You
+can modify these values to modify the environment it will see. This allows you
+do to something like this:
+
+ enable 'Precompressed', env_keys => [ 'HTTP_HOST' ],
+	rules => sub { $_[0]{'HTTP_HOST'} = 'gzip.assets.example.com' };
+
+This somewhat peculiar interface is necessary so the middleware can abstract
+away the details of trying to copy as little data as possible during a request.
 
 =back
+
+=head1 SUBCLASSING
+
+If you reuse a particular configuration of Plack::Middleware::Precompressed in
+many projects, you can avoid repeating the same configuration in each of them
+by subclassing this middleware and overriding the C<rewrite> and C<env_keys>
+methods.
+
+The C<rewrite> method will be called just as the C<rules> callback would be.
+
+The C<env_keys> method should return an array reference and will have the same
+effect on the C<rewrite> method as the configuration option on the C<rules>
+callback.
 
 =head1 SEE ALSO
 
@@ -120,7 +172,3 @@ This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
 
 =cut
-
-
-__END__
-

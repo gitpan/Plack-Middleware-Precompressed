@@ -7,24 +7,30 @@ build_requires:
   Plack::Builder: 0
   Plack::Test: 0
   Test::More: 0
+  warnings: 0
 configure_requires:
-  ExtUtils::MakeMaker: 6.31
+  ExtUtils::MakeMaker: 6.30
 dynamic_config: 0
-generated_by: 'Dist::Zilla version 4.200004, CPAN::Meta::Converter version 2.101670'
+generated_by: 'Dist::Zilla version 4.300028, CPAN::Meta::Converter version 2.120921'
 license: perl
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
 name: Plack-Middleware-Precompressed
+no_index:
+  package:
+    - Plack::Middleware::PrecompressedSubclass
 requires:
+  Array::RefElem: 0
   Plack: 0.9942
   Plack::MIME: 0
   Plack::Middleware: 0
   Plack::Util: 0
   Plack::Util::Accessor: 0
   parent: 0
+  strict: 0
 resources:
   bugtracker: http://github.com/ap/Plack-Middleware-Precompressed/issues
   homepage: http://github.com/ap/Plack-Middleware-Precompressed
   repository: git://github.com/ap/Plack-Middleware-Precompressed
-version: 1.005
+version: 1.100
