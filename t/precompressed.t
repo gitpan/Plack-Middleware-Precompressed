@@ -5,8 +5,9 @@ use Plack::Builder;
 use Test::More;
 use HTTP::Request::Common;
 
-my $status;
-my $app = sub { return [ $status->($_[0]), [ 'Content-Type' => 'text/plain' ], [ $_[0]{'PATH_INFO'} ] ] };
+our $key = 'PATH_INFO';
+my $status = sub { 200 };
+my $app = sub { return [ $status->($_[0]), [ 'Content-Type' => 'text/plain' ], [ $_[0]{ $key } ] ] };
 
 $app = builder {
 	enable 'Precompressed', match => qr/\.js\z/;
@@ -15,8 +16,8 @@ $app = builder {
 
 test_psgi app => $app, client => sub {
 	my $cb = shift;
-
 	my $res;
+
 	$status = sub { 200 };
 
 	$res = $cb->( GET 'http://localhost/foo' );
@@ -36,6 +37,12 @@ test_psgi app => $app, client => sub {
 	is $res->header( 'Content-Type' ), 'application/javascript', '... using a locally detected MIME type';
 	is $res->header( 'Content-Encoding' ), 'gzip', '... and have the right encoding declared';
 	is $res->header( 'Vary' ), 'Accept-Encoding', '... along with Accept-Encoding a Vary criterion';
+
+	{
+	local $key = 'HTTP_ACCEPT_ENCODING';
+	$res = $cb->( GET 'http://localhost/foo.js', 'Accept-Encoding' => 'gzip' );
+	is $res->content(), '', '... and with Accept-Encoding hidden from the wrapped PSGI app';
+	}
 
 	$status = sub { 404 };
 

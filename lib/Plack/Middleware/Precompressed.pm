@@ -1,6 +1,6 @@
 package Plack::Middleware::Precompressed;
 {
-  $Plack::Middleware::Precompressed::VERSION = '1.100';
+  $Plack::Middleware::Precompressed::VERSION = '1.101';
 }
 use strict;
 use parent 'Plack::Middleware';
@@ -43,6 +43,7 @@ sub call {
 			Array::RefElem::hv_store %pass_env, $_, $env->{ $_ } for @$keys;
 			$self->rewrite( \%pass_env ) for $env->{'PATH_INFO'};
 		}
+		delete local $env->{'HTTP_ACCEPT_ENCODING'} if $encoding;
 		$self->app->( $env );
 	};
 
@@ -77,7 +78,7 @@ Plack::Middleware::Precompressed - serve pre-gzipped content to compression-enab
 
 =head1 VERSION
 
-version 1.100
+version 1.101
 
 =head1 SYNOPSIS
 

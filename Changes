@@ -1,5 +1,9 @@
 Revision history for Plack-Middleware-Precompressed
 
+1.101 Tue 25 Dec 2012
+	- Prevent wrapped middlewares from attempting compression when trying
+	  to retrieve a precompressed response.
+
 1.100 Sat 15 Dec 2012
 	- Added support for `rules` and `env_keys` options as well as for
 	  subclassing.
