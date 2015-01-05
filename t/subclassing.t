@@ -1,5 +1,6 @@
 use strict;
-no warnings;
+use warnings;
+
 use Plack::Test;
 use Plack::Builder;
 use Test::More;
@@ -25,7 +26,8 @@ test_psgi
 done_testing;
 
 BEGIN {
-package Plack::Middleware::PrecompressedSubclass;
+package # hide from PAUSE
+	Plack::Middleware::PrecompressedSubclass;
 use parent 'Plack::Middleware::Precompressed';
 
 sub env_keys { \@key }

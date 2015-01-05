@@ -1,11 +1,12 @@
-package Plack::Middleware::Precompressed;
-{
-  $Plack::Middleware::Precompressed::VERSION = '1.101';
-}
+use 5.006;
 use strict;
-use parent 'Plack::Middleware';
+use warnings;
 
+package Plack::Middleware::Precompressed;
+$Plack::Middleware::Precompressed::VERSION = '1.102';
 # ABSTRACT: serve pre-gzipped content to compression-enabled clients
+
+use parent 'Plack::Middleware';
 
 use Plack::Util::Accessor qw( match rules env_keys );
 use Plack::MIME ();
@@ -27,6 +28,8 @@ sub call {
 	my $path = $env->{'PATH_INFO'};
 	my $have_match = $self->match ? $path =~ $self->match : 1;
 
+	# the `deflate` encoding is unreliably messy so we won't support it
+	# c.f. http://zoompf.com/2012/02/lose-the-wait-http-compression
 	if ( $have_match ) {
 		( $encoding ) =
 			grep { $_ eq 'gzip' or $_ eq 'x-gzip' }
@@ -72,13 +75,15 @@ __END__
 
 =pod
 
+=encoding UTF-8
+
 =head1 NAME
 
 Plack::Middleware::Precompressed - serve pre-gzipped content to compression-enabled clients
 
 =head1 VERSION
 
-version 1.101
+version 1.102
 
 =head1 SYNOPSIS
 
@@ -167,7 +172,7 @@ Aristotle Pagaltzis <pagaltzis@gmx.de>
 
 =head1 COPYRIGHT AND LICENSE
 
-This software is copyright (c) 2011 by Aristotle Pagaltzis.
+This software is copyright (c) 2015 by Aristotle Pagaltzis.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.

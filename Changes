@@ -1,5 +1,10 @@
 Revision history for Plack-Middleware-Precompressed
 
+1.102 Tue 25 Dec 2012
+	- No functional changes.
+	- Cleaned up test suite.
+	- Specified mininmum Perl requirement.
+
 1.101 Tue 25 Dec 2012
 	- Prevent wrapped middlewares from attempting compression when trying
 	  to retrieve a precompressed response.

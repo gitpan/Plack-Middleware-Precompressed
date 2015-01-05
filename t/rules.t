@@ -1,5 +1,6 @@
 use strict;
-no warnings;
+use warnings;
+
 use Plack::Test;
 use Plack::Builder;
 use Test::More;
